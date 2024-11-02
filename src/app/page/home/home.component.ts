@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { ContractDeployService } from '../../services/contract-deploy.service';
-import { abi, bytecode } from './MultisigWallet.json';
+import { abi, bytecode } from '../../services/MultisigWallet.json';
 import { Web3Service } from '../../services/web3.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getAddress } from 'ethers';
