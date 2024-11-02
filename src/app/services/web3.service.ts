@@ -5,7 +5,7 @@ import { NotifyModalComponent } from '../components/modal/notify-modal/notify-mo
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContractService } from './contract.service';
-import { abi, bytecode } from './MultisigWallet.json';
+import { abi, bytecode } from '../MultisigWallet.json';
 @Injectable({
   providedIn: 'root'
 })
