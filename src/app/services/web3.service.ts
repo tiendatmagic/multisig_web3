@@ -29,16 +29,13 @@ export class Web3Service {
   private getRequiredSignaturesSubject = new BehaviorSubject<number>(0);
   public getRequiredSignatures$ = this.getRequiredSignaturesSubject.asObservable();
 
-  private nativeSymbolSubject = new BehaviorSubject<string>('BNB');
+  private nativeSymbolSubject = new BehaviorSubject<string>('ETH');
   public nativeSymbol$ = this.nativeSymbolSubject.asObservable();
 
-  public winAudio = new Audio('assets/sound/win.mp3');
-  public loseAudio = new Audio('assets/sound/lose.mp3');
+  private transactionDetailSubject = new BehaviorSubject<any>([]);
+  public transactionDetail$ = this.transactionDetailSubject.asObservable();
 
-  public flipContract: any;
-
-  private FLIP_CONTRACT_ADDRESS = '0xa797a7f1c0398c668a318f027a44da1e547403e9';
-  private FLIP_ABI = [];
+  public multiSigContract: any;
   private balanceCheckInterval: any;
   contractAddress: any = '';
 
@@ -103,6 +100,14 @@ export class Web3Service {
     this.getRequiredSignaturesSubject.next(value);
   }
 
+  get transactionDetail(): any {
+    return this.transactionDetailSubject.value;
+  }
+  set transactionDetail(value: any) {
+    this.transactionDetailSubject.next(value);
+  }
+
+
   async connectWallet() {
     try {
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
@@ -144,34 +149,6 @@ export class Web3Service {
       this.isConnectWallet = true;
     }
     return !!this.account;
-  }
-
-  async checkAndSwitchNetworkARB(): Promise<void> {
-    const currentChainId: any = await this.web3.eth.getChainId();
-    if (currentChainId !== parseInt('0xa4b1', 16)) {
-      try {
-        await (window as any).ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0xa4b1' }],
-        });
-
-        this.FLIP_CONTRACT_ADDRESS = this.contractService.network[1].FLIP_CONTRACT_ADDRESS;
-        {
-          this.flipContract = new this.web3.eth.Contract(this.contractService.network[1].FLIP_ABI, this.contractService.network[1].FLIP_CONTRACT_ADDRESS);
-          this.nativeSymbol = "ETH";
-        }
-        // this.isConnectWallet = true;
-      } catch (error: any) {
-        if (error.code === 4902) {
-          this.showModal("", "Arbitrum mainet is not available in MetaMask. Adding the network.", "error", true, false);
-          this.isConnectWallet = false;
-          await this.addARBMainet();
-        } else if (error.code !== 4001) {
-          this.showModal("", "Failed to switch network. " + error, "error", true, false);
-          this.isConnectWallet = false;
-        }
-      }
-    }
   }
 
   private async addBNBTestnet() {
@@ -257,15 +234,15 @@ export class Web3Service {
   }
 
   async init() {
-    this.flipContract = new this.web3.eth.Contract(abi, this.contractAddress);
+    this.multiSigContract = new this.web3.eth.Contract(abi, this.contractAddress);
   }
 
   async getInfo(address: string = '0x0000000000000000000000000000000000000000') {
     this.contractAddress = address;
     await this.init();
-    const getTransactionCount = await this.flipContract.methods.getTransactionCount().call();
-    const getRequiredSignatures = await this.flipContract.methods.requiredSignatures().call();
-    const getOwners = await this.flipContract.methods.getOwners().call();
+    const getTransactionCount = await this.multiSigContract.methods.getTransactionCount().call();
+    const getRequiredSignatures = await this.multiSigContract.methods.requiredSignatures().call();
+    const getOwners = await this.multiSigContract.methods.getOwners().call();
     this.ownerList = getOwners;
     this.getTransactionCount = getTransactionCount;
     this.getRequiredSignatures = getRequiredSignatures;
@@ -273,7 +250,7 @@ export class Web3Service {
 
   async submitTransaction(address: string, amount: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.submitTransaction(address, this.web3.utils.toWei(amount, 'ether')
+    await this.multiSigContract.methods.submitTransaction(address, this.web3.utils.toWei(amount, 'ether')
     ).send({
       from: this.account,
       gasPrice,
@@ -283,7 +260,7 @@ export class Web3Service {
 
   async submitTokenTransaction(address: string, tokenAddress: string, amount: number, decimals: number = 1) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
+    await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
     ).send({
       from: this.account,
       gasPrice,
@@ -293,7 +270,7 @@ export class Web3Service {
 
   async submitAddOwner(address: string) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.submitAddOwner(address).send({
+    await this.multiSigContract.methods.submitAddOwner(address).send({
       from: this.account,
       gasPrice,
     });
@@ -302,7 +279,7 @@ export class Web3Service {
 
   async submitRemoveOwner(address: string) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.submitRemoveOwner(address).send({
+    await this.multiSigContract.methods.submitRemoveOwner(address).send({
       from: this.account,
       gasPrice,
     });
@@ -311,7 +288,7 @@ export class Web3Service {
 
   async submitSetRequiredSignatures(signatures: number = 1) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.submitSetRequiredSignatures(signatures
+    await this.multiSigContract.methods.submitSetRequiredSignatures(signatures
     ).send({
       from: this.account,
       gasPrice,
@@ -321,7 +298,7 @@ export class Web3Service {
 
   async confirmTransaction(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.confirmTransaction(txIndex).send({
+    await this.multiSigContract.methods.confirmTransaction(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -330,7 +307,7 @@ export class Web3Service {
 
   async confirmSetRequiredSignatures(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.confirmSetRequiredSignatures(txIndex).send({
+    await this.multiSigContract.methods.confirmSetRequiredSignatures(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -339,7 +316,7 @@ export class Web3Service {
 
   async confirmAddOwner(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.confirmAddOwner(txIndex).send({
+    await this.multiSigContract.methods.confirmAddOwner(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -347,7 +324,7 @@ export class Web3Service {
   }
   async confirmRemoveOwner(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.confirmRemoveOwner(txIndex).send({
+    await this.multiSigContract.methods.confirmRemoveOwner(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -356,7 +333,7 @@ export class Web3Service {
 
   async executeTransaction(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.executeTransaction(txIndex).send({
+    await this.multiSigContract.methods.executeTransaction(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -366,7 +343,7 @@ export class Web3Service {
 
   async executeAddOwner(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.executeAddOwner(txIndex).send({
+    await this.multiSigContract.methods.executeAddOwner(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -375,7 +352,7 @@ export class Web3Service {
   }
   async executeRemoveOwner(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.executeRemoveOwner(txIndex).send({
+    await this.multiSigContract.methods.executeRemoveOwner(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -385,7 +362,7 @@ export class Web3Service {
 
   async executeSetRequiredSignatures(txIndex: number) {
     const gasPrice = await this.web3.eth.getGasPrice();
-    await this.flipContract.methods.executeSetRequiredSignatures(txIndex).send({
+    await this.multiSigContract.methods.executeSetRequiredSignatures(txIndex).send({
       from: this.account,
       gasPrice,
     });
@@ -393,6 +370,19 @@ export class Web3Service {
     await this.getInfo(this.contractAddress);
   }
 
+  async getTransaction(txIndex: number) {
+    const getTransaction = await this.multiSigContract.methods.getTransaction(txIndex).call();
+    this.transactionDetail = {
+      to: getTransaction.to,
+      value: getTransaction.value.toString(),
+      executed: getTransaction.executed,
+      confirmations: getTransaction.confirmations.toString(),
+      createdAt: getTransaction.createdAt.toString(),
+      isTokenTransaction: getTransaction.isTokenTransaction,
+      tokenAddress: getTransaction.tokenAddress
+    }
+    console.log(getTransaction);
+  }
   showModal(title: string, message: string, status: string, showCloseBtn: boolean = true, disableClose: boolean = true, installMetamask: boolean = false) {
     this.dialog.closeAll();
     this.dialog.open(NotifyModalComponent, {

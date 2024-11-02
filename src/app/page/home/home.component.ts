@@ -28,6 +28,7 @@ export class HomeComponent {
   newRequiredSignatures: any;
   newOwnerAddress: any;
   removeOwnerAddress: any;
+  txIndexScan: any;
   confirmTransactionTxIndex: any;
   confirmSetRequiredSignaturesTxIndex: any;
   confirmAddOwnerTxIndex: any;
@@ -43,6 +44,7 @@ export class HomeComponent {
   ownerListLength = 1;
   ownerAddresses: any;
   nrRequiredSignatures: any = 1;
+  transactionDetail: any = [];
   @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
   constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router) {
@@ -58,6 +60,10 @@ export class HomeComponent {
     });
     this.web3Service.getRequiredSignatures$.subscribe((value) => {
       this.requiredSignatures = value;
+    });
+    this.web3Service.transactionDetail$.subscribe((value) => {
+      this.transactionDetail = value;
+      console.log(value);
     });
   }
 
@@ -361,5 +367,17 @@ export class HomeComponent {
       link.download = this.contractAddress + '.png'; // Tên tệp khi tải về
       link.click();
     });
+  }
+
+  onGetTransaction() {
+    if (!this.isConnected) {
+      this.web3Service.showModal("", "Please connect wallet first", "error", true, false);
+      return;
+    }
+    if (!this.txIndexScan) {
+      this.web3Service.showModal("", "Please enter transaction index", "error", true, false);
+      return;
+    }
+    this.web3Service.getTransaction(this.txIndexScan);
   }
 }
