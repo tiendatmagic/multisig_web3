@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ContractDeployService } from '../../services/contract-deploy.service';
 import { abi, bytecode } from './MultisigWallet.json';
 import { Web3Service } from '../../services/web3.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getAddress } from 'ethers';
+import { FixMeLater } from 'angularx-qrcode';
+import html2canvas from 'html2canvas';
 
 
 @Component({
@@ -41,6 +43,7 @@ export class HomeComponent {
   ownerListLength = 1;
   ownerAddresses: any;
   nrRequiredSignatures: any = 1;
+  @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
   constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router) {
     this.web3Service.isConnectWallet$.subscribe((value) => {
@@ -349,5 +352,14 @@ export class HomeComponent {
 
   copyToClipboard(text: string) {
     navigator.clipboard.writeText(text);
+  }
+
+  saveAsImage() {
+    html2canvas(this.qrCodeElement.nativeElement).then(canvas => {
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL('image/png');
+      link.download = this.contractAddress + '.png'; // Tên tệp khi tải về
+      link.click();
+    });
   }
 }

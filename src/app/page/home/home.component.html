@@ -74,12 +74,21 @@
     <ng-container *ngIf="contractAddress && contractAddress!=='0x0000000000000000000000000000000000000000'">
       <mat-tab-group animationDuration="200ms">
         <mat-tab label="Deposit">
-          <qrcode qrdata="{{ contractAddress }}" [width]="300" [errorCorrectionLevel]="'M'" class="flex justify-center">
-          </qrcode>
-          <p class="p-3 text-lg font-medium text-center cursor-pointer" (click)="copyToClipboard(contractAddress)">
+          <div>
+            <div #qrCode class="flex justify-center w-[280px] mt-2 mx-auto">
+              <qrcode qrdata="{{ contractAddress }}" [width]="280" [errorCorrectionLevel]="'M'"
+                [imageSrc]="'./assets/image/heart.webp'" class="flex justify-center">
+              </qrcode>
+            </div>
+          </div>
+          <p class="p-3 text-lg font-medium text-center break-all cursor-pointer"
+            (click)="copyToClipboard(contractAddress)">
             Contract
             address:
             {{contractAddress}}</p>
+          <button matripple="" matripplecolor="#ffffff4d"
+            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px] mx-auto block" matRipple
+            matRippleColor="#ffffff80" (click)="saveAsImage()"> Download QR Code Image </button>
         </mat-tab>
         <mat-tab label="Control">
           <div class="grid grid-cols-1 gap-2 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -305,14 +314,32 @@
               </div>
             </div>
           </div>
-
         </mat-tab>
         <mat-tab label="Info">
-          <p>Contract address: {{contractAddress}}</p>
-          <p>Owner list: {{ownerList}}</p>
-          <p>Transaction count: {{transactionCount}}</p>
-          <p>Required signatures: {{requiredSignatures}} </p>
-          <p>Get transaction</p>
+          <div class="mt-2 break-all">
+            Contract address: <span
+              class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{contractAddress}}
+            </span>
+          </div>
+          <div class="mt-2 break-all">
+            Owner list:
+            <div class="flex flex-wrap gap-1">
+              <span *ngFor="let index of ownerList"
+                class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
+                index }}</span>
+            </div>
+          </div>
+          <div class="mt-2 break-all">
+            Transaction count: <span
+              class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{transactionCount}}
+            </span></div>
+          <div class="mt-2 break-all">
+            Required signatures: <span
+              class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{requiredSignatures}}
+            </span> </div>
+          <div class="mt-2 break-all">
+            Get transaction
+          </div>
         </mat-tab>
       </mat-tab-group>
     </ng-container>
