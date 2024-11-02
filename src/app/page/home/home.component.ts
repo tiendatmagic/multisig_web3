@@ -45,6 +45,7 @@ export class HomeComponent {
   ownerAddresses: any;
   nrRequiredSignatures: any = 1;
   transactionDetail: any = [];
+  balanceAddress: any = 0;
   @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
   constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router) {
@@ -63,7 +64,6 @@ export class HomeComponent {
     });
     this.web3Service.transactionDetail$.subscribe((value) => {
       this.transactionDetail = value;
-      console.log(value);
     });
   }
 
