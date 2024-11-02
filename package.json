@@ -22,6 +22,7 @@
     "@angular/platform-browser-dynamic": "^17.3.0",
     "@angular/router": "^17.3.0",
     "@walletconnect/web3-provider": "^1.8.0",
+    "angularx-qrcode": "^17.0.1",
     "canvas-confetti": "^1.9.3",
     "ethers": "^6.13.4",
     "flowbite": "^2.5.1",

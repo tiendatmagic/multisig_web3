@@ -346,4 +346,8 @@ export class HomeComponent {
     }
     this.web3Service.executeRemoveOwner(this.executeRemoveOwnerTxIndex);
   }
+
+  copyToClipboard(text: string) {
+    navigator.clipboard.writeText(text);
+  }
 }

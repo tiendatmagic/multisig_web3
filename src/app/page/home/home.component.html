@@ -73,6 +73,14 @@
   <div class="mt-3">
     <ng-container *ngIf="contractAddress && contractAddress!=='0x0000000000000000000000000000000000000000'">
       <mat-tab-group animationDuration="200ms">
+        <mat-tab label="Deposit">
+          <qrcode qrdata="{{ contractAddress }}" [width]="300" [errorCorrectionLevel]="'M'" class="flex justify-center">
+          </qrcode>
+          <p class="p-3 text-lg font-medium text-center cursor-pointer" (click)="copyToClipboard(contractAddress)">
+            Contract
+            address:
+            {{contractAddress}}</p>
+        </mat-tab>
         <mat-tab label="Control">
           <div class="grid grid-cols-1 gap-2 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <div>
@@ -300,6 +308,7 @@
 
         </mat-tab>
         <mat-tab label="Info">
+          <p>Contract address: {{contractAddress}}</p>
           <p>Owner list: {{ownerList}}</p>
           <p>Transaction count: {{transactionCount}}</p>
           <p>Required signatures: {{requiredSignatures}} </p>

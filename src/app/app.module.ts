@@ -18,7 +18,7 @@ import { HomeComponent } from './page/home/home.component';
 import { Error404Component } from './page/error/error404/error404.component';
 import { ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
-
+import { QRCodeModule } from 'angularx-qrcode';
 
 const globalRippleConfig: RippleGlobalOptions = {
   animation: {
@@ -48,7 +48,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     MatSnackBarModule,
     ReactiveFormsModule,
     FormsModule,
-    MatTabsModule
+    MatTabsModule,
+    QRCodeModule
   ],
   providers: [
     {
