@@ -29,6 +29,12 @@ export class Web3Service {
   private getRequiredSignaturesSubject = new BehaviorSubject<number>(0);
   public getRequiredSignatures$ = this.getRequiredSignaturesSubject.asObservable();
 
+  private getNativeTokenBalanceSubject = new BehaviorSubject<number>(0);
+  public getNativeTokenBalance$ = this.getNativeTokenBalanceSubject.asObservable();
+
+  private getTokenAddressBalanceSubject = new BehaviorSubject<number>(0);
+  public getTokenAddressBalance$ = this.getTokenAddressBalanceSubject.asObservable();
+
   private nativeSymbolSubject = new BehaviorSubject<string>('ETH');
   public nativeSymbol$ = this.nativeSymbolSubject.asObservable();
 
@@ -86,6 +92,19 @@ export class Web3Service {
     this.ownerListSubject.next(value);
   }
 
+  get getNativeTokenBalance(): any {
+    return this.getNativeTokenBalanceSubject.value;
+  }
+  set getNativeTokenBalance(value: any) {
+    this.getNativeTokenBalanceSubject.next(value);
+  }
+
+  get getTokenAddressBalance(): any {
+    return this.getTokenAddressBalanceSubject.value;
+  }
+  set getTokenAddressBalance(value: any) {
+    this.getTokenAddressBalanceSubject.next(value);
+  }
   get getTransactionCount(): any {
     return this.getTransactionCountSubject.value;
   }
@@ -197,9 +216,11 @@ export class Web3Service {
     const getTransactionCount = await this.multiSigContract.methods.getTransactionCount().call();
     const getRequiredSignatures = await this.multiSigContract.methods.requiredSignatures().call();
     const getOwners = await this.multiSigContract.methods.getOwners().call();
+    const getNativeTokenBalance = await this.multiSigContract.methods.getNativeTokenBalance().call();
     this.ownerList = getOwners;
     this.getTransactionCount = getTransactionCount;
     this.getRequiredSignatures = getRequiredSignatures;
+    this.getNativeTokenBalance = this.web3.utils.fromWei(getNativeTokenBalance, 'ether')
   }
 
   async submitTransaction(address: string, amount: number) {
@@ -406,18 +427,34 @@ export class Web3Service {
     await this.getInfo(this.contractAddress);
   }
 
-  async getTransaction(txIndex: number) {
-    const getTransaction = await this.multiSigContract.methods.getTransaction(txIndex).call();
-    this.transactionDetail = {
-      to: getTransaction.to,
-      value: getTransaction.value.toString(),
-      executed: getTransaction.executed,
-      confirmations: getTransaction.confirmations.toString(),
-      createdAt: getTransaction.createdAt.toString(),
-      isTokenTransaction: getTransaction.isTokenTransaction,
-      tokenAddress: getTransaction.tokenAddress
+  async getTokenAddress(tokenAddress: string) {
+    try {
+      const getERC20TokenBalance = await this.multiSigContract.methods.getERC20TokenBalance(tokenAddress).call();
+      this.getTokenAddressBalance = this.web3.utils.fromWei(getERC20TokenBalance, 'ether')
+    } catch (e) {
+
     }
   }
+
+  async getTransaction(txIndex: number) {
+    try {
+      const getTransaction = await this.multiSigContract.methods.getTransaction(txIndex).call();
+      this.transactionDetail = {
+        to: getTransaction.to,
+        value: getTransaction.value.toString(),
+        executed: getTransaction.executed,
+        confirmations: getTransaction.confirmations.toString(),
+        createdAt: getTransaction.createdAt.toString(),
+        isTokenTransaction: getTransaction.isTokenTransaction,
+        tokenAddress: getTransaction.tokenAddress
+      }
+    } catch (e) {
+      this.transactionDetail = {
+
+      }
+    }
+  }
+
   showModal(title: string, message: string, status: string, showCloseBtn: boolean = true, disableClose: boolean = true, installMetamask: boolean = false) {
     this.dialog.closeAll();
     this.dialog.open(NotifyModalComponent, {

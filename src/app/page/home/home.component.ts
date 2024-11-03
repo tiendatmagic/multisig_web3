@@ -45,7 +45,9 @@ export class HomeComponent {
   ownerAddresses: any;
   nrRequiredSignatures: any = 1;
   transactionDetail: any = [];
+  tokenAddressBalanceScan: any = '';
   balanceAddress: any = 0;
+  tokenAddressBalance: any = 0;
   @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
   constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router) {
@@ -61,6 +63,12 @@ export class HomeComponent {
     });
     this.web3Service.getRequiredSignatures$.subscribe((value) => {
       this.requiredSignatures = value;
+    });
+    this.web3Service.getNativeTokenBalance$.subscribe((value) => {
+      this.balanceAddress = value;
+    });
+    this.web3Service.getTokenAddressBalance$.subscribe((value) => {
+      this.tokenAddressBalance = value;
     });
     this.web3Service.transactionDetail$.subscribe((value) => {
       this.transactionDetail = value;
@@ -379,5 +387,17 @@ export class HomeComponent {
       return;
     }
     this.web3Service.getTransaction(this.txIndexScan);
+  }
+
+  onGetTokenBalance() {
+    if (!this.isConnected) {
+      this.web3Service.showModal("", "Please connect wallet first", "error", true, false);
+      return;
+    }
+    if (!this.tokenAddressBalanceScan) {
+      this.web3Service.showModal("", "Please enter token address", "error", true, false);
+      return;
+    }
+    this.web3Service.getTokenAddress(this.tokenAddressBalanceScan);
   }
 }
