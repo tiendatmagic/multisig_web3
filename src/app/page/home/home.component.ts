@@ -17,6 +17,7 @@ export class HomeComponent {
   isConnected: boolean = false;
   isShowDeployContract: boolean = false;
   isShowImportContract: boolean = false;
+  isAdvancedContract: boolean = false;
   contractAddress: any = '';
   multisigAddress: any;
   submitTransactionAddress: any;
@@ -33,6 +34,7 @@ export class HomeComponent {
   confirmSetRequiredSignaturesTxIndex: any;
   confirmAddOwnerTxIndex: any;
   confirmRemoveOwnerTxIndex: any;
+  payableAmount: any;
   executeTransactionTxIndex: any;
   executeSetRequiredSignaturesTxIndex: any;
   executeAddOwnerTxIndex: any;
@@ -64,8 +66,8 @@ export class HomeComponent {
     this.web3Service.getRequiredSignatures$.subscribe((value) => {
       this.requiredSignatures = value;
     });
-    this.web3Service.getNativeTokenBalance$.subscribe((value) => {
-      this.balanceAddress = value;
+    this.web3Service.getNativeTokenBalance$.subscribe((value: any) => {
+      this.balanceAddress = parseFloat(value);
     });
     this.web3Service.getTokenAddressBalance$.subscribe((value) => {
       this.tokenAddressBalance = value;
@@ -131,7 +133,6 @@ export class HomeComponent {
   }
 
   onDeloyContract() {
-    console.log(this.ownerAddresses);
     const filteredArray = this.ownerAddresses.filter((item: any) => item !== '');
     if (filteredArray.length === 0) {
       this.web3Service.showModal("", "You must add at least one owner", "error", true, false);
@@ -165,6 +166,16 @@ export class HomeComponent {
     }
     this.isShowDeployContract = false;
     this.isShowImportContract = !this.isShowImportContract;
+  }
+
+  chooseAdvancedContract() {
+    if (!this.isConnected) {
+      this.web3Service.showModal("", "Please connect wallet first", "error", true, false);
+      return;
+    }
+    this.isAdvancedContract = !this.isAdvancedContract;
+    this.web3Service.isAdvancedContract = this.isAdvancedContract;
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onImportContract() {
@@ -325,7 +336,12 @@ export class HomeComponent {
       this.web3Service.showModal("", "Please enter transaction index", "error", true, false);
       return;
     }
-    this.web3Service.executeTransaction(this.executeTransactionTxIndex);
+    if (this.isAdvancedContract) {
+      this.web3Service.executeTransaction(this.executeTransactionTxIndex, this.payableAmount);
+    }
+    else {
+      this.web3Service.executeTransaction(this.executeTransactionTxIndex);
+    }
   }
   onExecuteSetRequiredSignaturesTxIndex() {
     if (!this.isConnected) {

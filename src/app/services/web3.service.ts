@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContractService } from './contract.service';
 import { abi, bytecode } from '../MultisigWallet.json';
+import { abiAdv, bytecodeAdv } from '../MultisigWalletAdvanced.json';
 @Injectable({
   providedIn: 'root'
 })
@@ -43,6 +44,10 @@ export class Web3Service {
 
   public multiSigContract: any;
   private balanceCheckInterval: any;
+
+  private isAdvancedContractSubject = new BehaviorSubject<boolean>(false);
+  public isAdvancedContract$ = this.isAdvancedContractSubject.asObservable();
+
   contractAddress: any = '';
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
@@ -126,6 +131,12 @@ export class Web3Service {
     this.transactionDetailSubject.next(value);
   }
 
+  get isAdvancedContract(): boolean {
+    return this.isAdvancedContractSubject.value;
+  }
+  set isAdvancedContract(value: boolean) {
+    this.isAdvancedContractSubject.next(value);
+  }
 
   async connectWallet() {
     try {
@@ -207,7 +218,12 @@ export class Web3Service {
   }
 
   async init() {
-    this.multiSigContract = new this.web3.eth.Contract(abi, this.contractAddress);
+    if (this.isAdvancedContract) {
+      this.multiSigContract = new this.web3.eth.Contract(abiAdv, this.contractAddress);
+    }
+    else {
+      this.multiSigContract = new this.web3.eth.Contract(abi, this.contractAddress);
+    }
   }
 
   async getInfo(address: string = '0x0000000000000000000000000000000000000000') {
@@ -294,7 +310,6 @@ export class Web3Service {
       from: this.account,
       gasPrice,
     });
-    console.log(result);
     const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
     this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
       horizontalPosition: 'right',
@@ -310,7 +325,6 @@ export class Web3Service {
       from: this.account,
       gasPrice,
     });
-    console.log(result);
     const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
     this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
       horizontalPosition: 'right',
@@ -364,12 +378,23 @@ export class Web3Service {
     await this.getBalance();
   }
 
-  async executeTransaction(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
+  async executeTransaction(txIndex: number, payableAmount: any = null) {
+    const gasPrice = (await this.web3.eth.getGasPrice()).toString();
+    var result;
+    if (this.isAdvancedContract) {
+      result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
+        from: this.account,
+        value: this.web3.utils.toWei(payableAmount, 'ether'),
+        gasPrice,
+      });
+    }
+    else {
+      result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+    }
+
     const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
     this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
       horizontalPosition: 'right',
