@@ -552,7 +552,7 @@ export class Web3Service {
         value: getTransaction.value.toString(),
         executed: getTransaction.executed,
         confirmations: getTransaction.confirmations.toString(),
-        createdAt: getTransaction.createdAt.toString(),
+        createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
         isTokenTransaction: getTransaction.isTokenTransaction,
         tokenAddress: getTransaction.tokenAddress
       }
