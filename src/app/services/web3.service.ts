@@ -240,216 +240,299 @@ export class Web3Service {
   }
 
   async submitTransaction(address: string, amount: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.submitTransaction(address, this.web3.utils.toWei(amount, 'ether')
-    ).send({
-      from: this.account,
-      gasPrice,
-    });
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitTransaction(address, this.web3.utils.toWei(amount, 'ether')
+      ).send({
+        from: this.account,
+        gasPrice,
+      });
 
-    const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+      const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async submitTokenTransaction(address: string, tokenAddress: string, amount: number, decimals: number = 1) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
-    ).send({
-      from: this.account,
-      gasPrice,
-    });
+    try {
 
-    const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
+      ).send({
+        from: this.account,
+        gasPrice,
+      });
+
+      const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async submitAddOwner(address: string) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.submitAddOwner(address).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitAddOwner(address).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async submitRemoveOwner(address: string) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.submitRemoveOwner(address).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitRemoveOwner(address).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async submitSetRequiredSignatures(signatures: number = 1) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.submitSetRequiredSignatures(signatures
-    ).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitSetRequiredSignatures(signatures
+      ).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async confirmTransaction(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.confirmTransaction(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.confirmTransaction(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async confirmSetRequiredSignatures(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.confirmSetRequiredSignatures(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.confirmSetRequiredSignatures(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async confirmAddOwner(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.confirmAddOwner(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.confirmAddOwner(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
   async confirmRemoveOwner(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.confirmRemoveOwner(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
+    try {
+
+
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.confirmRemoveOwner(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ConfirmTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async executeTransaction(txIndex: number, payableAmount: any = null) {
-    const gasPrice = (await this.web3.eth.getGasPrice()).toString();
-    var result;
-    if (this.isAdvancedContract) {
-      result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
-        from: this.account,
-        value: this.web3.utils.toWei(payableAmount, 'ether'),
-        gasPrice,
-      });
-    }
-    else {
-      result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
-        from: this.account,
-        gasPrice,
-      });
-    }
+    try {
 
-    const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
-    await this.getInfo(this.contractAddress);
+
+      const gasPrice = (await this.web3.eth.getGasPrice()).toString();
+      var result;
+      if (this.isAdvancedContract) {
+        result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
+          from: this.account,
+          value: this.web3.utils.toWei(payableAmount, 'ether'),
+          gasPrice,
+        });
+      }
+      else {
+        result = await this.multiSigContract.methods.executeTransaction(txIndex).send({
+          from: this.account,
+          gasPrice,
+        });
+      }
+
+      const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+      await this.getInfo(this.contractAddress);
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async executeAddOwner(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.executeAddOwner(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
-    await this.getInfo(this.contractAddress);
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.executeAddOwner(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+      await this.getInfo(this.contractAddress);
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
   async executeRemoveOwner(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.executeRemoveOwner(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
-    await this.getInfo(this.contractAddress);
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.executeRemoveOwner(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+      await this.getInfo(this.contractAddress);
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async executeSetRequiredSignatures(txIndex: number) {
-    const gasPrice = await this.web3.eth.getGasPrice();
-    const result = await this.multiSigContract.methods.executeSetRequiredSignatures(txIndex).send({
-      from: this.account,
-      gasPrice,
-    });
-    const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
-    this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
-      horizontalPosition: 'right',
-      verticalPosition: 'bottom',
-      duration: 5000
-    });
-    await this.getBalance();
-    await this.getInfo(this.contractAddress);
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.executeSetRequiredSignatures(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ExecuteTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+      await this.getInfo(this.contractAddress);
+    }
+    catch (e: any) {
+      this.showModal("", e.message, "error", true, false);
+    }
   }
 
   async getTokenAddress(tokenAddress: string) {
@@ -457,7 +540,7 @@ export class Web3Service {
       const getERC20TokenBalance = await this.multiSigContract.methods.getERC20TokenBalance(tokenAddress).call();
       this.getTokenAddressBalance = this.web3.utils.fromWei(getERC20TokenBalance, 'ether')
     } catch (e) {
-
+      this.getTokenAddressBalance = 0;
     }
   }
 
