@@ -74,7 +74,6 @@ export class HomeComponent {
     });
     this.web3Service.transactionDetail$.subscribe((value) => {
       this.transactionDetail = value;
-      console.log(value);
     });
   }
 
@@ -145,7 +144,6 @@ export class HomeComponent {
     }
 
     this.nrRequiredSignatures = filteredArray.length;
-    console.log(this.nrRequiredSignatures);
     this.deployContract(filteredArray, this.nrRequiredSignatures);
   }
 
@@ -177,6 +175,7 @@ export class HomeComponent {
     this.isAdvancedContract = !this.isAdvancedContract;
     this.web3Service.isAdvancedContract = this.isAdvancedContract;
     this.web3Service.getInfo(this.contractAddress);
+
   }
 
   onImportContract() {
@@ -210,7 +209,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.submitTransaction(this.submitTransactionAddress, this.submitTransactionAmount);
-
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onSubmitTokenTransaction() {
@@ -236,7 +235,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.submitTokenTransaction(this.submitTokenTransactionAddress, this.submitTokenTransactionTokenAddress, this.submitTokenTransactionAmount, this.submitTokenTransactionDecimals);
-
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onSubmitSetRequiredSignatures() {
@@ -250,6 +249,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.submitSetRequiredSignatures(this.newRequiredSignatures);
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onSubmitAddOwner() {
@@ -263,6 +263,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.submitAddOwner(this.newOwnerAddress);
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onSubmitRemoveOwner() {
@@ -276,6 +277,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.submitRemoveOwner(this.removeOwnerAddress);
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   onConfirmTransactionTxIndex() {
@@ -289,6 +291,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.confirmTransaction(this.confirmTransactionTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   onConfirmSetRequiredSignaturesTxIndex() {
     if (!this.isConnected) {
@@ -301,6 +304,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.confirmSetRequiredSignatures(this.confirmSetRequiredSignaturesTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   onConfirmAddOwnerTxIndex() {
     if (!this.isConnected) {
@@ -313,6 +317,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.confirmAddOwner(this.confirmAddOwnerTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   onConfirmRemoveOwnerTxIndex() {
     if (!this.isConnected) {
@@ -325,6 +330,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.confirmRemoveOwner(this.confirmRemoveOwnerTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   //
   onExecuteTransactionTxIndex() {
@@ -343,6 +349,7 @@ export class HomeComponent {
     else {
       this.web3Service.executeTransaction(this.executeTransactionTxIndex);
     }
+    this.web3Service.getInfo(this.contractAddress);
   }
   onExecuteSetRequiredSignaturesTxIndex() {
     if (!this.isConnected) {
@@ -355,6 +362,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.executeSetRequiredSignatures(this.executeSetRequiredSignaturesTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   onExecuteAddOwnerTxIndex() {
     if (!this.isConnected) {
@@ -367,6 +375,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.executeAddOwner(this.executeAddOwnerTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
   onExecuteRemoveOwnerTxIndex() {
     if (!this.isConnected) {
@@ -379,6 +388,7 @@ export class HomeComponent {
       return;
     }
     this.web3Service.executeRemoveOwner(this.executeRemoveOwnerTxIndex);
+    this.web3Service.getInfo(this.contractAddress);
   }
 
   copyToClipboard(text: string) {
