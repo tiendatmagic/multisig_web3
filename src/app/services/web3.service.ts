@@ -554,7 +554,8 @@ export class Web3Service {
         confirmations: getTransaction.confirmations.toString(),
         createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
         isTokenTransaction: getTransaction.isTokenTransaction,
-        tokenAddress: getTransaction.tokenAddress
+        tokenAddress: getTransaction.tokenAddress,
+        txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
       }
     } catch (e) {
       this.transactionDetail = {

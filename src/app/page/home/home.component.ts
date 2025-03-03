@@ -74,6 +74,7 @@ export class HomeComponent {
     });
     this.web3Service.transactionDetail$.subscribe((value) => {
       this.transactionDetail = value;
+      console.log(value);
     });
   }
 
