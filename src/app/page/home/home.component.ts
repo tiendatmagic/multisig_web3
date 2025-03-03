@@ -91,10 +91,6 @@ export class HomeComponent {
     this.ownerAddresses = new Array(this.ownerListLength).fill('');
   }
 
-  ngDoCheck() {
-    console.log(this.contractAddress);
-  }
-
   trackByIndex(index: number, item: any): number {
     return item;
   }
