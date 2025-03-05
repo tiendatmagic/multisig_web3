@@ -54,9 +54,9 @@ export class Web3Service {
     try {
       // Yêu cầu quyền truy cập tài khoản
       const accounts = (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      console.log(accounts);
     } catch (error: any) {
       this.showModal("", "MetaMask is not installed!", "error", true, true, true);
-      window.open("https://metamask.io/", "_blank");
     }
   }
 
@@ -144,7 +144,12 @@ export class Web3Service {
       await this.getBalance();
       this.startBalanceCheck();
     } catch (error: any) {
-      if (error.message && error) {
+      try {
+        if (error.code && error) {
+          this.showModal("", error.message, "error", true, false);
+        }
+      }
+      catch {
         this.showModal("", "MetaMask is not installed!", "error", true, true, true);
       }
     }
