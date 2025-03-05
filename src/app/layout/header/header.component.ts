@@ -44,10 +44,8 @@ export class HeaderComponent implements OnInit {
 
   async connectWallet() {
     await this.web3Service.connectWallet();
-
     this.account = this.web3Service.getAccount();
     await this.loadBalance();
-    // this.web3Service.isConnectWallet = true;
   }
 
   async disconnectWallet(): Promise<void> {
