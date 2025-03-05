@@ -51,12 +51,10 @@ export class Web3Service {
   contractAddress: any = '';
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
-    if (typeof (window as any).ethereum !== 'undefined') {
-      this.web3 = new Web3((window as any).ethereum);
-      this.setupAccountChangeListener();
-      this.setupNetworkChangeListener();
-
-    } else {
+    try {
+      // Yêu cầu quyền truy cập tài khoản
+      const accounts = (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+    } catch (error: any) {
       this.showModal("", "MetaMask is not installed!", "error", true, true, true);
       window.open("https://metamask.io/", "_blank");
     }
@@ -146,7 +144,9 @@ export class Web3Service {
       await this.getBalance();
       this.startBalanceCheck();
     } catch (error: any) {
-      this.showModal("", error.message, "error", true, false);
+      if (error.message && error) {
+        this.showModal("", "MetaMask is not installed!", "error", true, true, true);
+      }
     }
   }
 
@@ -179,6 +179,17 @@ export class Web3Service {
       this.isConnectWallet = true;
     }
     return !!this.account;
+  }
+
+  ngOnInit() {
+    if (typeof (window as any).ethereum !== 'undefined') {
+      this.web3 = new Web3((window as any).ethereum);
+      this.setupAccountChangeListener();
+      this.setupNetworkChangeListener();
+    } else {
+      this.showModal("", "MetaMask is not installed!", "error", true, true, true);
+      window.open("https://metamask.io/", "_blank");
+    }
   }
 
   private setupAccountChangeListener() {
@@ -287,8 +298,6 @@ export class Web3Service {
 
   async submitAddOwner(address: string) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.submitAddOwner(address).send({
         from: this.account,
