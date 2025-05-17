@@ -378,9 +378,16 @@
                   {{ balanceAddress }} ETH
                 </span>
               </div>
+
+              <div class="flex items-center gap-1 mt-2 break-all">
+                <span class="text-lg font-medium"> Owner list: </span>
+                <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">
+                  {{ ownerList.length }}
+                </span>
+              </div>
+
               <div class="mt-2 break-all">
-                Owner list:
-                <div class="flex flex-wrap gap-1">
+                <div class="flex flex-wrap gap-1 mt-2">
                   <span *ngFor="let index of ownerList"
                     class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{ index }}
                   </span>
