@@ -145,7 +145,7 @@ export class Web3Service {
       this.startBalanceCheck();
     } catch (error: any) {
       try {
-        if (error.code && error) {
+        if (error.code && error.message && error) {
           this.showModal("", error.message, "error", true, false);
         }
       }
@@ -273,7 +273,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -297,7 +299,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -317,7 +321,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -339,7 +345,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -362,7 +370,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -384,7 +394,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -406,7 +418,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -428,7 +442,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
   async confirmRemoveOwner(txIndex: number) {
@@ -449,7 +465,9 @@ export class Web3Service {
       await this.getBalance();
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -483,7 +501,9 @@ export class Web3Service {
       await this.getInfo(this.contractAddress);
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -504,7 +524,9 @@ export class Web3Service {
       await this.getInfo(this.contractAddress);
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
   async executeRemoveOwner(txIndex: number) {
@@ -524,7 +546,9 @@ export class Web3Service {
       await this.getInfo(this.contractAddress);
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 
@@ -545,7 +569,9 @@ export class Web3Service {
       await this.getInfo(this.contractAddress);
     }
     catch (e: any) {
-      this.showModal("", e.message, "error", true, false);
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
     }
   }
 

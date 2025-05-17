@@ -19,6 +19,7 @@ import { Error404Component } from './page/error/error404/error404.component';
 import { ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { QRCodeModule } from 'angularx-qrcode';
+import { ContactComponent } from './page/contact/contact.component';
 
 const globalRippleConfig: RippleGlobalOptions = {
   animation: {
@@ -35,7 +36,8 @@ const globalRippleConfig: RippleGlobalOptions = {
     MainComponent,
     NotifyModalComponent,
     HomeComponent,
-    Error404Component
+    Error404Component,
+    ContactComponent
   ],
   imports: [
     BrowserModule,
