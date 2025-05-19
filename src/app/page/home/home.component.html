@@ -89,10 +89,32 @@
       <mat-tab-group animationDuration="200ms">
         <mat-tab label="Deposit">
           <div>
-            <div #qrCode class="flex justify-center w-[280px] mt-2 mx-auto">
+            <div #qrCode class="flex justify-center w-[280px] mt-2 mx-auto" (click)="copyToClipboard(contractAddress)">
               <qrcode qrdata="{{ contractAddress }}" [width]="280" [errorCorrectionLevel]="'M'"
                 [imageSrc]="'./assets/image/heart.webp'" class="flex justify-center">
               </qrcode>
+            </div>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-end justify-center gap-3 my-1">
+              <div>
+                <div>
+                  <p class="text-lg font-medium">Amount</p>
+                  <div class="">
+                    <input type="text"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="TxIndex" [(ngModel)]="amountTokenNative" id="amountTokenNative" name="Amount"
+                      autocomplete="true" />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button matripple="" matripplecolor="#ffffff4d"
+                  class="bg-white text-blue-500 p-2.5 rounded-lg border border-blue-500 min-w-[90px]" matRipple
+                  (click)="depositWallet()">
+                  Deposit Wallet
+                </button>
+              </div>
             </div>
           </div>
           <p class="p-3 text-lg font-medium text-center break-all cursor-pointer"
@@ -100,11 +122,13 @@
             Contract address:
             {{ contractAddress }}
           </p>
-          <button matripple="" matripplecolor="#ffffff4d"
-            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px] mx-auto block" matRipple
-            matRippleColor="#ffffff80" (click)="saveAsImage()">
-            Download QR Code Image
-          </button>
+          <div class="flex items-center justify-center gap-3 my-3">
+            <button matripple="" matripplecolor="#ffffff4d"
+              class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
+              matRippleColor="#ffffff80" (click)="saveAsImage()">
+              Download QR Code Image
+            </button>
+          </div>
         </mat-tab>
         <mat-tab label="Control">
           <div class="grid grid-cols-1 gap-2 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3">

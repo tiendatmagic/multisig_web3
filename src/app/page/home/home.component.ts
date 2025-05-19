@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getAddress } from 'ethers';
 import { FixMeLater } from 'angularx-qrcode';
 import html2canvas from 'html2canvas';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -50,9 +51,10 @@ export class HomeComponent {
   tokenAddressBalanceScan: any = '';
   balanceAddress: any = 0;
   tokenAddressBalance: any = 0;
+  amountTokenNative: any = 0;
   @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
-  constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router) {
+  constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar) {
     this.web3Service.isConnectWallet$.subscribe((value) => {
       this.isConnected = value;
     });
@@ -391,8 +393,45 @@ export class HomeComponent {
     this.web3Service.getInfo(this.contractAddress);
   }
 
-  copyToClipboard(text: string) {
-    navigator.clipboard.writeText(text);
+  depositWallet() {
+    if (!this.isConnected) {
+      this.web3Service.showModal("", "Please connect wallet first", "error", true, false);
+      return;
+    }
+
+    if (!this.amountTokenNative) {
+      this.web3Service.showModal("", "Please enter amount", "error", true, false);
+      return;
+    }
+
+    this.web3Service.depositETH(this.amountTokenNative);
+    this.web3Service.getInfo(this.contractAddress);
+  }
+
+  copyToClipboard(address: string) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(address).then(() => {
+        this.snackBar.open('Address copied to clipboard', 'OK', {
+          horizontalPosition: 'right',
+          verticalPosition: 'bottom',
+          duration: 3000
+        });
+
+      }).catch(function (error) {
+        console.error('Failed to copy address: ', error);
+      });
+    } else {
+      let textArea = document.createElement("textarea");
+      textArea.value = address;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+      } catch (error) {
+        console.error('Failed to copy address: ', error);
+      }
+      document.body.removeChild(textArea);
+    }
   }
 
   saveAsImage() {

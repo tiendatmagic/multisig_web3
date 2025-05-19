@@ -62,7 +62,6 @@ export class HeaderComponent implements OnInit {
 
     if (navigator.clipboard) {
       navigator.clipboard.writeText(address).then(() => {
-        console.log('Address copied to clipboard');
         this.snackBar.open('Address copied to clipboard', 'OK', {
           horizontalPosition: 'right',
           verticalPosition: 'bottom',
