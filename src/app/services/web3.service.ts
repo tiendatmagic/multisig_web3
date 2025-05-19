@@ -7,6 +7,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContractService } from './contract.service';
 import { abi, bytecode } from '../MultisigWallet.json';
 import { abiAdv, bytecodeAdv } from '../MultisigWalletAdvanced.json';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -52,7 +53,6 @@ export class Web3Service {
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
     try {
-      // Yêu cầu quyền truy cập tài khoản
       const accounts = (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       console.log(accounts);
     } catch (error: any) {
@@ -140,7 +140,6 @@ export class Web3Service {
     try {
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       this.account = accounts[0];
-
       await this.getBalance();
       this.startBalanceCheck();
     } catch (error: any) {
@@ -154,7 +153,6 @@ export class Web3Service {
       }
     }
   }
-
 
   disconnectWallet(): void {
     this.account = null;
@@ -230,7 +228,7 @@ export class Web3Service {
           await this.getBalance();
         });
       }
-    }, 10000); // Check balances every 10 seconds
+    }, 10000);
   }
 
   async init() {
@@ -253,6 +251,75 @@ export class Web3Service {
     this.getTransactionCount = getTransactionCount;
     this.getRequiredSignatures = getRequiredSignatures;
     this.getNativeTokenBalance = this.web3.utils.fromWei(getNativeTokenBalance, 'ether')
+  }
+
+  async depositETH(amountTokenNative: string) {
+    try {
+      if (!this.web3) throw new Error('Web3 provider is not initialized');
+      if (!this.contractAddress) throw new Error('Contract address is not set');
+      if (!this.isConnected()) throw new Error('Wallet is not connected');
+
+      const code = await this.web3.eth.getCode(this.contractAddress);
+      if (code === '0x') throw new Error('Address is not a contract');
+
+      const amount = amountTokenNative;
+      const value = this.web3.utils.toWei(amount, 'ether');
+
+      if (!value || isNaN(Number(value))) throw new Error('Invalid value for transaction');
+
+      let gas;
+      try {
+        gas = Number(await this.web3.eth.estimateGas({
+          from: this.account,
+          to: this.contractAddress,
+          value
+        }));
+      } catch (e: any) {
+        console.error('Gas estimation failed:', JSON.stringify(e, null, 2));
+        throw new Error(`Failed to estimate gas: ${e.message || 'Unknown error'}`);
+      }
+      const gasLimit = Math.ceil(gas * 1.2);
+
+      const txParams: any = {
+        from: this.account,
+        to: this.contractAddress,
+        value,
+        gas: gasLimit
+      };
+
+      const block = await this.web3.eth.getBlock('latest');
+      if (block.baseFeePerGas) {
+        const baseFeePerGas = Number(block.baseFeePerGas);
+        const priorityFeePerGas = Number(this.web3.utils.toWei('2', 'gwei'));
+        const maxFeePerGas = Math.ceil(baseFeePerGas * 1 + priorityFeePerGas);
+
+        txParams.maxFeePerGas = maxFeePerGas;
+        txParams.maxPriorityFeePerGas = priorityFeePerGas;
+      } else {
+        const gasPrice = Number(await this.web3.eth.getGasPrice());
+        const bufferedGasPrice = Math.ceil(gasPrice);
+
+        txParams.gasPrice = bufferedGasPrice;
+      }
+
+      const tx = await this.web3.eth.sendTransaction(txParams);
+
+      this.snackBar.open('Successfully deposited ' + amount + ' ETH', 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+
+      await this.getBalance();
+      await this.getInfo(this.contractAddress);
+
+      return tx;
+    } catch (e: any) {
+      console.error('Deposit error:', JSON.stringify(e, null, 2));
+      const errorMessage = e.data?.reason || e.message || 'Failed to deposit ETH';
+      this.showModal('', errorMessage, 'error', true, false);
+      throw e;
+    }
   }
 
   async submitTransaction(address: string, amount: number) {
@@ -281,8 +348,6 @@ export class Web3Service {
 
   async submitTokenTransaction(address: string, tokenAddress: string, amount: number, decimals: number = 1) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
       ).send({
@@ -329,8 +394,6 @@ export class Web3Service {
 
   async submitRemoveOwner(address: string) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.submitRemoveOwner(address).send({
         from: this.account,
@@ -353,8 +416,6 @@ export class Web3Service {
 
   async submitSetRequiredSignatures(signatures: number = 1) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.submitSetRequiredSignatures(signatures
       ).send({
@@ -378,8 +439,6 @@ export class Web3Service {
 
   async confirmTransaction(txIndex: number) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.confirmTransaction(txIndex).send({
         from: this.account,
@@ -402,8 +461,6 @@ export class Web3Service {
 
   async confirmSetRequiredSignatures(txIndex: number) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.confirmSetRequiredSignatures(txIndex).send({
         from: this.account,
@@ -426,8 +483,6 @@ export class Web3Service {
 
   async confirmAddOwner(txIndex: number) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.confirmAddOwner(txIndex).send({
         from: this.account,
@@ -447,10 +502,9 @@ export class Web3Service {
       }
     }
   }
+
   async confirmRemoveOwner(txIndex: number) {
     try {
-
-
       const gasPrice = await this.web3.eth.getGasPrice();
       const result = await this.multiSigContract.methods.confirmRemoveOwner(txIndex).send({
         from: this.account,
@@ -473,8 +527,6 @@ export class Web3Service {
 
   async executeTransaction(txIndex: number, payableAmount: any = null) {
     try {
-
-
       const gasPrice = (await this.web3.eth.getGasPrice()).toString();
       var result;
       if (this.isAdvancedContract) {
@@ -529,6 +581,7 @@ export class Web3Service {
       }
     }
   }
+
   async executeRemoveOwner(txIndex: number) {
     try {
       const gasPrice = await this.web3.eth.getGasPrice();
@@ -598,9 +651,7 @@ export class Web3Service {
         txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
       }
     } catch (e) {
-      this.transactionDetail = {
-
-      }
+      this.transactionDetail = {}
     }
   }
 
@@ -619,5 +670,4 @@ export class Web3Service {
       }
     });
   }
-
 }
