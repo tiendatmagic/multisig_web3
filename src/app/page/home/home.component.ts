@@ -29,7 +29,7 @@ export class HomeComponent {
   submitTokenTransactionAddress: any;
   submitTokenTransactionTokenAddress: any;
   submitTokenTransactionAmount: any;
-  submitTokenTransactionDecimals: any;
+
   newRequiredSignatures: any;
   newOwnerAddress: any;
   removeOwnerAddress: any;
@@ -56,8 +56,9 @@ export class HomeComponent {
   tokenAddressBalance: any = 0;
   amountTokenNative: any = 0;
   version: number = 2;
-  @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
-
+  @ViewChild('qrCode') qrCodeElement!: any;
+  tokenDecimals: number | null = null;
+  tokenSymbol: string | null = null;
 
   // New properties for v2
   submitERC721Address: any;
@@ -91,6 +92,9 @@ export class HomeComponent {
     this.web3Service.getTokenAddressBalance$.subscribe((value) => {
       this.tokenAddressBalance = value;
     });
+    this.web3Service.tokenSymbol$.subscribe((value) => {
+      this.tokenSymbol = value;
+    });
     this.web3Service.transactionDetail$.subscribe((value) => {
       this.transactionDetail = value;
     });
@@ -108,6 +112,14 @@ export class HomeComponent {
     }
     this.numbersArray = Array.from({ length: this.ownerListLength }).map((_, index) => index + 1);
     this.ownerAddresses = new Array(this.ownerListLength).fill('');
+  }
+
+  async onTokenAddressChange() {
+    if (this.submitTokenTransactionTokenAddress && this.web3Service.isAddress(this.submitTokenTransactionTokenAddress)) {
+      this.tokenDecimals = await this.web3Service.getTokenDecimals(this.submitTokenTransactionTokenAddress);
+    } else {
+      this.tokenDecimals = null;
+    }
   }
 
   trackByIndex(index: number, item: any): number {
@@ -250,11 +262,8 @@ export class HomeComponent {
       this.web3Service.showModal("", "Please enter transaction amount", "error", true, false);
       return;
     }
-    if (!this.submitTokenTransactionDecimals) {
-      this.web3Service.showModal("", "Please enter transaction decimals", "error", true, false);
-      return;
-    }
-    this.web3Service.submitTokenTransaction(this.submitTokenTransactionAddress, this.submitTokenTransactionTokenAddress, this.submitTokenTransactionAmount, this.submitTokenTransactionDecimals);
+
+    this.web3Service.submitTokenTransaction(this.submitTokenTransactionAddress, this.submitTokenTransactionTokenAddress, this.submitTokenTransactionAmount);
     this.web3Service.getInfo(this.contractAddress);
   }
 
@@ -473,7 +482,7 @@ export class HomeComponent {
     this.web3Service.getTransaction(this.txIndexScan);
   }
 
-  onGetTokenBalance() {
+  async onGetTokenBalance() {
     if (!this.isConnected) {
       this.web3Service.showModal("", "Please connect wallet first", "error", true, false);
       return;
@@ -481,6 +490,13 @@ export class HomeComponent {
     if (!this.tokenAddressBalanceScan) {
       this.web3Service.showModal("", "Please enter token address", "error", true, false);
       return;
+    }
+
+    if (this.tokenAddressBalanceScan && this.web3Service.isAddress(this.tokenAddressBalanceScan)) {
+      await this.web3Service.getTokenAddress(this.tokenAddressBalanceScan);
+      this.tokenAddressBalance = this.web3Service.getTokenAddressBalance;
+    } else {
+      this.web3Service.showModal("", "Please enter valid token address", "error", true, false);
     }
     this.web3Service.getTokenAddress(this.tokenAddressBalanceScan);
   }

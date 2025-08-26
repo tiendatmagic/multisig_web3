@@ -39,6 +39,9 @@ export class Web3Service {
   private getTokenAddressBalanceSubject = new BehaviorSubject<number>(0);
   public getTokenAddressBalance$ = this.getTokenAddressBalanceSubject.asObservable();
 
+  private tokenSymbolSubject = new BehaviorSubject<string>('');
+  public tokenSymbol$ = this.tokenSymbolSubject.asObservable();
+
   private nativeSymbolSubject = new BehaviorSubject<string>('ETH');
   public nativeSymbol$ = this.nativeSymbolSubject.asObservable();
 
@@ -53,12 +56,13 @@ export class Web3Service {
 
   public versionSubject = new BehaviorSubject<number>(2);
   public version$ = this.versionSubject.asObservable();
+  public tokenSymbol: any = 'Token';
   contractAddress: any = '';
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
     try {
       const accounts = (window as any).ethereum.request({ method: 'eth_requestAccounts' });
-      console.log(accounts);
+
     } catch (error: any) {
       this.showModal("", "MetaMask is not installed!", "error", true, true, true);
     }
@@ -140,6 +144,7 @@ export class Web3Service {
     this.isAdvancedContractSubject.next(value);
   }
 
+
   async connectWallet() {
     try {
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
@@ -171,6 +176,10 @@ export class Web3Service {
     return this.account;
   }
 
+  public isAddress(address: string): boolean {
+    return this.web3.utils.isAddress(address);
+  }
+
   async getBalance() {
     if (!this.account) return '0';
     const balance = await this.web3.eth.getBalance(this.account);
@@ -186,6 +195,28 @@ export class Web3Service {
       this.isConnectWallet = true;
     }
     return !!this.account;
+  }
+
+  async getTokenDecimals(tokenAddress: string): Promise<number> {
+    try {
+      const erc20Abi = [
+        {
+          constant: true,
+          inputs: [],
+          name: "decimals",
+          outputs: [{ name: "", type: "uint8" }],
+          type: "function",
+        },
+      ];
+      const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenAddress);
+      const decimals = await tokenContract.methods['decimals']().call();
+      console.log('decimals:', decimals);
+      return Number(decimals);
+    } catch (e: any) {
+      console.error('Error fetching decimals:', e.message);
+      this.showModal("", `Error fetching decimals: ${e.message}`, "error", true, false);
+      return 18;
+    }
   }
 
   ngOnInit() {
@@ -356,15 +387,15 @@ export class Web3Service {
     }
   }
 
-  async submitTokenTransaction(address: string, tokenAddress: string, amount: number, decimals: number = 1) {
+  async submitTokenTransaction(address: string, tokenAddress: string, amount: number) {
     try {
+      const decimals = await this.getTokenDecimals(tokenAddress);
+      const adjustedAmount = BigInt(Math.round(amount * Math.pow(10, decimals)));
       const gasPrice = await this.web3.eth.getGasPrice();
-      const result = await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, amount * 10 ** decimals
-      ).send({
+      const result = await this.multiSigContract.methods.submitTokenTransaction(address, tokenAddress, adjustedAmount).send({
         from: this.account,
         gasPrice,
       });
-
       const txIndexTransaction = result.events.SubmitTransaction.returnValues.txIndex.toString();
       this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
         horizontalPosition: 'right',
@@ -638,13 +669,33 @@ export class Web3Service {
     }
   }
 
+
   async getTokenAddress(tokenAddress: string) {
     try {
+      const decimals = await this.getTokenDecimals(tokenAddress);
+      // const symbol = await this.getTokenSymbol(tokenAddress);
+      const symbol = 'Token';
       const getERC20TokenBalance = await this.multiSigContract.methods.getERC20TokenBalance(tokenAddress).call();
-      this.getTokenAddressBalance = this.web3.utils.fromWei(getERC20TokenBalance, 'ether')
-    } catch (e) {
+      this.getTokenAddressBalance = Number(getERC20TokenBalance) / Math.pow(10, decimals);
+      this.tokenSymbol = symbol;
+
+    } catch (e: any) {
+      console.error('Error fetching token balance:', e.message);
       this.getTokenAddressBalance = 0;
+      this.tokenSymbol = 'Token';
+      this.showModal("", `Không thể lấy số dư token: ${e.message}`, "error", true, false);
     }
+  }
+
+  getWeiUnit(decimals: number): string {
+    const units: { [key: number]: string } = {
+      6: 'mwei',
+      9: 'gwei',
+      12: 'szabo',
+      15: 'finney',
+      18: 'ether',
+    };
+    return units[decimals] || 'ether';
   }
 
   async submitWithdrawNativeToken(address: string, amount: number) {
@@ -670,8 +721,10 @@ export class Web3Service {
 
   async submitWithdrawERC20(address: string, tokenAddress: string, amount: number) {
     try {
+      const decimals = await this.getTokenDecimals(tokenAddress);
+      const adjustedAmount = BigInt(Math.round(amount * Math.pow(10, decimals)));
       const gasPrice = await this.web3.eth.getGasPrice();
-      const result = await this.multiSigContract.methods.submitWithdrawERC20(address, tokenAddress, amount).send({
+      const result = await this.multiSigContract.methods.submitWithdrawERC20(address, tokenAddress, adjustedAmount).send({
         from: this.account,
         gasPrice,
       });

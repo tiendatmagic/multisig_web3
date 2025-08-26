@@ -182,19 +182,16 @@
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
                       placeholder="Token Address" [(ngModel)]="submitTokenTransactionTokenAddress"
                       id="submitTokenTransactionTokenAddress" name="submitTokenTransactionTokenAddress"
-                      autocomplete="true" />
+                      autocomplete="true" (ngModelChange)="onTokenAddressChange()" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2" *ngIf="tokenDecimals !== null">
+                    <p class="text-base font-medium">Decimals: {{ tokenDecimals }}</p>
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="number"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
                       placeholder="Amount" [(ngModel)]="submitTokenTransactionAmount" id="submitTokenTransactionAmount"
                       name="submitTokenTransactionAmount" autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <input type="number"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="Decimals" [(ngModel)]="submitTokenTransactionDecimals"
-                      id="submitTokenTransactionDecimals" name="submitTokenTransactionDecimals" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
                     <button matripple="" matripplecolor="#ffffff4d"
@@ -445,7 +442,7 @@
                 <div class="mt-2 break-all">
                   <span class="text-lg font-medium"> Get balance ERC20:</span>
                   <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">
-                    {{ tokenAddressBalance }} Token
+                    {{ tokenAddressBalance }} {{ tokenSymbol || 'Token' }}
                   </span>
                   <div class="mt-0">
                     <p class="text-lg font-medium">Token Address</p>
@@ -656,7 +653,7 @@
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
                       placeholder="Token Address" [(ngModel)]="submitTokenTransactionTokenAddress"
                       id="submitTokenTransactionTokenAddress" name="submitTokenTransactionTokenAddress"
-                      autocomplete="true" />
+                      autocomplete="true" (ngModelChange)="onTokenAddressChange()" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="number"
@@ -897,7 +894,7 @@
                 <div class="mt-2 break-all">
                   <span class="text-lg font-medium"> Get balance ERC20:</span>
                   <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
-                    tokenAddressBalance }} Token</span>
+                    tokenAddressBalance }} {{ tokenSymbol || 'Token' }}</span>
                   <div class="mt-0">
                     <p class="text-lg font-medium">Token Address</p>
                     <div class="flex flex-wrap gap-3 my-2">
