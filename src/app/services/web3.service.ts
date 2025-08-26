@@ -214,7 +214,6 @@ export class Web3Service {
       return Number(decimals);
     } catch (e: any) {
       console.error('Error fetching decimals:', e.message);
-      this.showModal("", `Error fetching decimals: ${e.message}`, "error", true, false);
       return 18;
     }
   }
@@ -683,7 +682,6 @@ export class Web3Service {
       console.error('Error fetching token balance:', e.message);
       this.getTokenAddressBalance = 0;
       this.tokenSymbol = 'Token';
-      this.showModal("", `Không thể lấy số dư token: ${e.message}`, "error", true, false);
     }
   }
 
