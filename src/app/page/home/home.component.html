@@ -1,9 +1,9 @@
 <h2 class="my-5 text-4xl font-medium text-center">MULTISIG WALLET</h2>
 
-<div class="flex gap-3 my-3s">
-  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none"
+<div class="flex gap-3 my-3">
+  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none" matRipple
     (click)="version = 1">Version 1</div>
-  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none"
+  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none" matRipple
     (click)="version = 2">Version 2</div>
 </div>
 
@@ -508,7 +508,6 @@
       (click)="chooseDeployContract()" matRipple>
       Deploy Contract
     </div>
-
     <div class="bg-[#e8edf3] p-4 rounded-lg cursor-pointer text-center text-lg font-medium select-none"
       (click)="chooseImportContract()" matRipple>
       Import Contract
@@ -530,25 +529,22 @@
               [placeholder]="'OwnerAddress' + index" [(ngModel)]="ownerAddresses[index - 1]"
               [id]="'newOwnerAddress' + index" [name]="'newOwnerAddress' + index" autocomplete="true" />
             <div>
-              <button matripple="" matripplecolor="#ffffff4d"
-                class="bg-blue-500 text-white p-2.5 rounded-lg border-red-500 min-w-[90px]" matRipple
-                matRippleColor="#ffffff80" (click)="removeOwner(index)">
+              <button matRipple matRippleColor="#ffffff80"
+                class="bg-blue-500 text-white p-2.5 rounded-lg border-red-500 min-w-[90px]"
+                (click)="removeOwner(index)">
                 Remove
               </button>
             </div>
           </div>
-
           <div class="flex flex-wrap gap-3 my-2">
-            <button matripple="" matripplecolor="#ffffff4d"
-              class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-              matRippleColor="#ffffff80" (click)="addOwner()">
+            <button matRipple matRippleColor="#ffffff80"
+              class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" (click)="addOwner()">
               Add
             </button>
           </div>
         </div>
-
         <div class="mt-3">
-          <p class="text-lg font-medium">submitSetRequiredSignatures</p>
+          <p class="text-lg font-medium">Required Signatures</p>
           <div class="flex flex-wrap gap-3 my-2">
             <input type="number"
               class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
@@ -556,11 +552,9 @@
               name="nrRequiredSignatures" autocomplete="true" />
           </div>
         </div>
-
         <div class="flex flex-wrap gap-3 my-2">
-          <button matripple="" matripplecolor="#ffffff4d"
-            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-            matRippleColor="#ffffff80" (click)="onDeloyContract()">
+          <button matRipple matRippleColor="#ffffff80"
+            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" (click)="onDeloyContract()">
             Write
           </button>
         </div>
@@ -575,61 +569,47 @@
             class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
             placeholder="Multisig Address" [(ngModel)]="multisigAddress" id="multisigAddress" name="multisigAddress"
             autocomplete="true" />
-          <button matripple="" matripplecolor="#ffffff4d"
-            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-            matRippleColor="#ffffff80" (click)="onImportContract()">
+          <button matRipple matRippleColor="#ffffff80"
+            class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" (click)="onImportContract()">
             Import
           </button>
         </div>
       </div>
     </ng-container>
-
     <div class="mt-3">
-      <ng-container *ngIf="
-        contractAddress &&
-        contractAddress !== '0x0000000000000000000000000000000000000000'
-      ">
+      <ng-container *ngIf="contractAddress && contractAddress !== '0x0000000000000000000000000000000000000000'">
         <mat-tab-group animationDuration="200ms">
           <mat-tab label="Deposit">
             <div>
               <div #qrCode class="flex justify-center w-[280px] mt-2 mx-auto"
                 (click)="copyToClipboard(contractAddress)">
                 <qrcode qrdata="{{ contractAddress }}" [width]="280" [errorCorrectionLevel]="'M'"
-                  [imageSrc]="'./assets/image/heart.webp'" class="flex justify-center">
-                </qrcode>
+                  [imageSrc]="'./assets/image/heart.webp'" class="flex justify-center"></qrcode>
               </div>
             </div>
             <div>
               <div class="flex flex-wrap items-end justify-center gap-3 my-1">
                 <div>
-                  <div>
-                    <p class="text-lg font-medium">Amount</p>
-                    <div class="">
-                      <input type="text"
-                        class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                        placeholder="TxIndex" [(ngModel)]="amountTokenNative" id="amountTokenNative" name="Amount"
-                        autocomplete="true" />
-                    </div>
-                  </div>
+                  <p class="text-lg font-medium">Amount</p>
+                  <input type="text"
+                    class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                    placeholder="Amount" [(ngModel)]="amountTokenNative" id="amountTokenNative" name="Amount"
+                    autocomplete="true" />
                 </div>
-                <div>
-                  <button matripple="" matripplecolor="#ffffff4d"
-                    class="bg-white text-blue-500 p-2.5 rounded-lg border border-blue-500 min-w-[90px]" matRipple
-                    (click)="depositWallet()">
-                    Deposit Wallet
-                  </button>
-                </div>
+                <button matRipple matRippleColor="#ffffff80"
+                  class="bg-white text-blue-500 p-2.5 rounded-lg border border-blue-500 min-w-[90px]"
+                  (click)="depositWallet()">
+                  Deposit Wallet
+                </button>
               </div>
             </div>
             <p class="p-3 text-lg font-medium text-center break-all cursor-pointer"
               (click)="copyToClipboard(contractAddress)">
-              Contract address:
-              {{ contractAddress }}
+              Contract address: {{ contractAddress }}
             </p>
             <div class="flex items-center justify-center gap-3 my-3">
-              <button matripple="" matripplecolor="#ffffff4d"
-                class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                matRippleColor="#ffffff80" (click)="saveAsImage()">
+              <button matRipple matRippleColor="#ffffff80"
+                class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" (click)="saveAsImage()">
                 Download QR Code Image
               </button>
             </div>
@@ -638,7 +618,7 @@
             <div class="grid grid-cols-1 gap-2 lg:gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div>
                 <div class="mt-3">
-                  <p class="text-lg font-medium">submitTransaction</p>
+                  <p class="text-lg font-medium">submitWithdrawNativeToken</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
@@ -652,16 +632,15 @@
                       name="submitTransactionAmount" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onSubmitTransaction()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onSubmitWithdrawNativeToken()">
                       Write
                     </button>
                   </div>
                 </div>
-
                 <div class="mt-3">
-                  <p class="text-lg font-medium">submitTokenTransaction</p>
+                  <p class="text-lg font-medium">submitWithdrawERC20</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
@@ -682,39 +661,77 @@
                       name="submitTokenTransactionAmount" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <input type="number"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="Decimals" [(ngModel)]="submitTokenTransactionDecimals"
-                      id="submitTokenTransactionDecimals" name="submitTokenTransactionDecimals" autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onSubmitTokenTransaction()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onSubmitWithdrawERC20()">
                       Write
                     </button>
                   </div>
                 </div>
-
                 <div class="mt-3">
-                  <p class="text-lg font-medium">submitSetRequiredSignatures</p>
+                  <p class="text-lg font-medium">submitWithdrawERC721</p>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="text"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Receiving Address" [(ngModel)]="submitERC721Address" id="submitERC721Address"
+                      name="submitERC721Address" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="text"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Token Address" [(ngModel)]="submitERC721TokenAddress" id="submitERC721TokenAddress"
+                      name="submitERC721TokenAddress" autocomplete="true" />
+                  </div>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="number"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="Signatures" [(ngModel)]="newRequiredSignatures" id="newRequiredSignatures"
-                      name="newRequiredSignatures" autocomplete="true" />
+                      placeholder="Token ID" [(ngModel)]="submitERC721TokenId" id="submitERC721TokenId"
+                      name="submitERC721TokenId" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onSubmitSetRequiredSignatures()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onSubmitWithdrawERC721()">
                       Write
                     </button>
                   </div>
                 </div>
-
                 <div class="mt-3">
-                  <p class="text-lg font-medium">submitAddOwner</p>
+                  <p class="text-lg font-medium">submitWithdrawERC1155</p>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="text"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Receiving Address" [(ngModel)]="submitERC1155Address" id="submitERC1155Address"
+                      name="submitERC1155Address" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="text"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Token Address" [(ngModel)]="submitERC1155TokenAddress" id="submitERC1155TokenAddress"
+                      name="submitERC1155TokenAddress" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="number"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Token ID" [(ngModel)]="submitERC1155TokenId" id="submitERC1155TokenId"
+                      name="submitERC1155TokenId" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="number"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Amount" [(ngModel)]="submitERC1155Amount" id="submitERC1155Amount"
+                      name="submitERC1155Amount" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onSubmitWithdrawERC1155()">
+                      Write
+                    </button>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <p class="text-lg font-medium">proposeAddOwner</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
@@ -722,16 +739,15 @@
                       name="newOwnerAddress" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onSubmitAddOwner()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onProposeAddOwner()">
                       Write
                     </button>
                   </div>
                 </div>
-
                 <div class="mt-3">
-                  <p class="text-lg font-medium">submitRemoveOwner</p>
+                  <p class="text-lg font-medium">proposeRemoveOwner</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
@@ -739,15 +755,30 @@
                       name="removeOwnerAddress" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onSubmitRemoveOwner()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onProposeRemoveOwner()">
+                      Write
+                    </button>
+                  </div>
+                </div>
+                <div class="mt-3">
+                  <p class="text-lg font-medium">proposeChangeRequiredSignatures</p>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <input type="number"
+                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
+                      placeholder="Signatures" [(ngModel)]="newRequiredSignatures" id="newRequiredSignatures"
+                      name="newRequiredSignatures" autocomplete="true" />
+                  </div>
+                  <div class="flex flex-wrap gap-3 my-2">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onProposeChangeRequiredSignatures()">
                       Write
                     </button>
                   </div>
                 </div>
               </div>
-
               <div>
                 <div class="mt-3">
                   <p class="text-lg font-medium">confirmTransaction</p>
@@ -758,64 +789,46 @@
                       name="confirmTransactionTxIndex" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onConfirmTransactionTxIndex()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onConfirmTransactionTxIndex()">
                       Write
                     </button>
                   </div>
                 </div>
                 <div class="mt-3">
-                  <p class="text-lg font-medium">confirmSetRequiredSignatures</p>
+                  <p class="text-lg font-medium">revokeConfirmation</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="confirmSetRequiredSignaturesTxIndex"
-                      id="confirmSetRequiredSignaturesTxIndex" name="confirmSetRequiredSignaturesTxIndex"
-                      autocomplete="true" />
+                      placeholder="TxIndex" [(ngModel)]="revokeConfirmationTxIndex" id="revokeConfirmationTxIndex"
+                      name="revokeConfirmationTxIndex" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onConfirmSetRequiredSignaturesTxIndex()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onRevokeConfirmation()">
                       Write
                     </button>
                   </div>
                 </div>
                 <div class="mt-3">
-                  <p class="text-lg font-medium">confirmAddOwner</p>
+                  <p class="text-lg font-medium">cancelTransaction</p>
                   <div class="flex flex-wrap gap-3 my-2">
                     <input type="text"
                       class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="confirmAddOwnerTxIndex" id="confirmAddOwnerTxIndex"
-                      name="confirmAddOwnerTxIndex" autocomplete="true" />
+                      placeholder="TxIndex" [(ngModel)]="cancelTransactionTxIndex" id="cancelTransactionTxIndex"
+                      name="cancelTransactionTxIndex" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onConfirmAddOwnerTxIndex()">
-                      Write
-                    </button>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <p class="text-lg font-medium">confirmRemoveOwner</p>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <input type="text"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="confirmRemoveOwnerTxIndex" id="confirmRemoveOwnerTxIndex"
-                      name="confirmRemoveOwnerTxIndex" autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onConfirmRemoveOwnerTxIndex()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onCancelTransaction()">
                       Write
                     </button>
                   </div>
                 </div>
               </div>
-
               <div>
                 <div class="mt-3">
                   <p class="text-lg font-medium">executeTransaction</p>
@@ -832,58 +845,9 @@
                       name="executeTransactionTxIndex" autocomplete="true" />
                   </div>
                   <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onExecuteTransactionTxIndex()">
-                      Write
-                    </button>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <p class="text-lg font-medium">executeSetRequiredSignatures</p>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <input type="text"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="executeSetRequiredSignaturesTxIndex"
-                      id="executeSetRequiredSignaturesTxIndex" name="executeSetRequiredSignaturesTxIndex"
-                      autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onExecuteSetRequiredSignaturesTxIndex()">
-                      Write
-                    </button>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <p class="text-lg font-medium">executeAddOwner</p>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <input type="text"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="executeAddOwnerTxIndex" id="executeAddOwnerTxIndex"
-                      name="executeAddOwnerTxIndex" autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onExecuteAddOwnerTxIndex()">
-                      Write
-                    </button>
-                  </div>
-                </div>
-                <div class="mt-3">
-                  <p class="text-lg font-medium">executeRemoveOwner</p>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <input type="text"
-                      class="border-[1px] rounded-lg p-2.5 bg-[#fcfcfc] dark:bg-[#12161d] focus:ring-0 placeholder:text-gray-500 dark:placeholder:text-gray-400 border-[#ececec] dark:border-[#3a444f] outline-none dark:focus:border-blue-500 focus:border-blue-500 w-full max-w-sm"
-                      placeholder="TxIndex" [(ngModel)]="executeRemoveOwnerTxIndex" id="executeRemoveOwnerTxIndex"
-                      name="executeRemoveOwnerTxIndex" autocomplete="true" />
-                  </div>
-                  <div class="flex flex-wrap gap-3 my-2">
-                    <button matripple="" matripplecolor="#ffffff4d"
-                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                      matRippleColor="#ffffff80" (click)="onExecuteRemoveOwnerTxIndex()">
+                    <button matRipple matRippleColor="#ffffff80"
+                      class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                      (click)="onExecuteTransactionTxIndex()">
                       Write
                     </button>
                   </div>
@@ -897,47 +861,39 @@
                 <div class="mt-2 break-all">
                   <span class="text-lg font-medium"> Contract address:</span>
                   <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
-                    contractAddress }}
-                  </span>
+                    contractAddress }}</span>
                 </div>
                 <div class="mt-2 break-all">
                   <span class="text-lg font-medium"> Balance address:</span>
-                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">
-                    {{ balanceAddress }} ETH
-                  </span>
+                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
+                    balanceAddress }} ETH</span>
                 </div>
-
                 <div class="flex items-center gap-1 mt-2 break-all">
                   <span class="text-lg font-medium"> Owner list: </span>
-                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">
-                    {{ ownerList.length }}
-                  </span>
+                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
+                    ownerList.length }}</span>
                 </div>
-
                 <div class="mt-2 break-all">
                   <div class="flex flex-wrap gap-1 mt-2">
                     <span *ngFor="let index of ownerList"
-                      class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{ index }}
-                    </span>
+                      class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{ index
+                      }}</span>
                   </div>
                 </div>
                 <div class="mt-2 break-all">
                   Transaction count:
                   <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
-                    transactionCount }}
-                  </span>
+                    transactionCount }}</span>
                 </div>
                 <div class="mt-2 break-all">
                   Required signatures:
                   <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
-                    requiredSignatures }}
-                  </span>
+                    requiredSignatures }}</span>
                 </div>
                 <div class="mt-2 break-all">
                   <span class="text-lg font-medium"> Get balance ERC20:</span>
-                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">
-                    {{ tokenAddressBalance }} Token
-                  </span>
+                  <span class="px-2 py-1 text-base font-medium text-gray-700 break-all bg-gray-100 rounded-lg">{{
+                    tokenAddressBalance }} Token</span>
                   <div class="mt-0">
                     <p class="text-lg font-medium">Token Address</p>
                     <div class="flex flex-wrap gap-3 my-2">
@@ -947,16 +903,15 @@
                         name="tokenAddressBalanceScan" autocomplete="true" />
                     </div>
                     <div class="flex flex-wrap gap-3 my-2">
-                      <button matripple="" matripplecolor="#ffffff4d"
-                        class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                        matRippleColor="#ffffff80" (click)="onGetTokenBalance()">
+                      <button matRipple matRippleColor="#ffffff80"
+                        class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                        (click)="onGetTokenBalance()">
                         Write
                       </button>
                     </div>
                   </div>
                 </div>
               </div>
-
               <div class="w-full lg:w-1/3">
                 <div class="mt-3 break-all">
                   <p class="text-lg font-medium"> Get transaction </p>
@@ -969,24 +924,24 @@
                         autocomplete="true" />
                     </div>
                     <div class="flex flex-wrap gap-3 my-2">
-                      <button matripple="" matripplecolor="#ffffff4d"
-                        class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]" matRipple
-                        matRippleColor="#ffffff80" (click)="onGetTransaction()">
+                      <button matRipple matRippleColor="#ffffff80"
+                        class="bg-blue-500 text-white p-2.5 rounded-lg border-blue-500 min-w-[90px]"
+                        (click)="onGetTransaction()">
                         Write
                       </button>
                     </div>
                   </div>
                 </div>
-
                 <div class="mt-3" *ngIf="transactionDetail && transactionDetail.to">
                   <p>To: {{ transactionDetail.to }}</p>
                   <p>Value: {{ transactionDetail.value }}</p>
                   <p>Executed: {{ transactionDetail.executed }}</p>
                   <p>Confirmations: {{ transactionDetail.confirmations }}</p>
                   <p>CreatedAt: {{ transactionDetail.createdAt }}</p>
-                  <p>IsTokenTransaction: {{ transactionDetail.isTokenTransaction }}</p>
                   <p>TokenAddress: {{ transactionDetail.tokenAddress }}</p>
-                  <p>txRequiredSignatures : {{ transactionDetail.txRequiredSignatures }}</p>
+                  <p>txRequiredSignatures: {{ transactionDetail.txRequiredSignatures }}</p>
+                  <p>TransactionType: {{ transactionDetail.txType }}</p>
+                  <p>Data: {{ transactionDetail.data }}</p>
                 </div>
               </div>
             </div>

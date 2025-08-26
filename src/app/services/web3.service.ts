@@ -7,6 +7,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ContractService } from './contract.service';
 import { abi, bytecode } from '../MultisigWallet.json';
 import { abiAdv, bytecodeAdv } from '../MultisigWalletAdvanced.json';
+import { abiV2, bytecodeV2 } from '../MultisigWalletV2.json';
+import { abiAdvV2, bytecodeAdvV2 } from '../MultisigWalletAdvancedV2.json';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +51,8 @@ export class Web3Service {
   private isAdvancedContractSubject = new BehaviorSubject<boolean>(false);
   public isAdvancedContract$ = this.isAdvancedContractSubject.asObservable();
 
+  public versionSubject = new BehaviorSubject<number>(2);
+  public version$ = this.versionSubject.asObservable();
   contractAddress: any = '';
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
@@ -232,11 +236,17 @@ export class Web3Service {
   }
 
   async init() {
-    if (this.isAdvancedContract) {
-      this.multiSigContract = new this.web3.eth.Contract(abiAdv, this.contractAddress);
-    }
-    else {
-      this.multiSigContract = new this.web3.eth.Contract(abi, this.contractAddress);
+    const version = this.versionSubject.value;
+    if (version === 2) {
+      this.multiSigContract = new this.web3.eth.Contract(
+        this.isAdvancedContract ? abiAdvV2 : abiV2,
+        this.contractAddress
+      );
+    } else {
+      this.multiSigContract = new this.web3.eth.Contract(
+        this.isAdvancedContract ? abiAdv : abi,
+        this.contractAddress
+      );
     }
   }
 
@@ -637,6 +647,195 @@ export class Web3Service {
     }
   }
 
+  async submitWithdrawNativeToken(address: string, amount: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitWithdrawNativeToken(address, this.web3.utils.toWei(amount.toString(), 'ether')).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async submitWithdrawERC20(address: string, tokenAddress: string, amount: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitWithdrawERC20(address, tokenAddress, amount).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async submitWithdrawERC721(address: string, tokenAddress: string, tokenId: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitWithdrawERC721(address, tokenAddress, tokenId).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async submitWithdrawERC1155(address: string, tokenAddress: string, tokenId: number, amount: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.submitWithdrawERC1155(address, tokenAddress, tokenId, amount).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async proposeAddOwner(address: string) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.proposeAddOwner(address).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async proposeRemoveOwner(address: string) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.proposeRemoveOwner(address).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async proposeChangeRequiredSignatures(signatures: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.proposeChangeRequiredSignatures(signatures).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.ProposeTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async revokeConfirmation(txIndex: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.revokeConfirmation(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.RevokeConfirmation.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
+  async cancelTransaction(txIndex: number) {
+    try {
+      const gasPrice = await this.web3.eth.getGasPrice();
+      const result = await this.multiSigContract.methods.cancelTransaction(txIndex).send({
+        from: this.account,
+        gasPrice,
+      });
+      const txIndexTransaction = result.events.CancelTransaction.returnValues.txIndex.toString();
+      this.snackBar.open('Tx index: ' + txIndexTransaction, 'OK', {
+        horizontalPosition: 'right',
+        verticalPosition: 'bottom',
+        duration: 5000
+      });
+      await this.getBalance();
+    } catch (e: any) {
+      if (e.message) {
+        this.showModal("", e.message, "error", true, false);
+      }
+    }
+  }
+
   async getTransaction(txIndex: number) {
     try {
       const getTransaction = await this.multiSigContract.methods.getTransaction(txIndex).call();
@@ -646,13 +845,27 @@ export class Web3Service {
         executed: getTransaction.executed,
         confirmations: getTransaction.confirmations.toString(),
         createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
-        isTokenTransaction: getTransaction.isTokenTransaction,
         tokenAddress: getTransaction.tokenAddress,
         txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
-      }
+        txType: this.getTransactionTypeName(getTransaction.txType),
+        data: getTransaction.data.toString()
+      };
     } catch (e) {
-      this.transactionDetail = {}
+      this.transactionDetail = {};
     }
+  }
+
+  private getTransactionTypeName(txType: number): string {
+    const types = [
+      'WithdrawNativeToken',
+      'WithdrawERC20',
+      'AddOwner',
+      'RemoveOwner',
+      'ChangeRequiredSignatures',
+      'WithdrawERC721',
+      'WithdrawERC1155'
+    ];
+    return types[txType] || 'Unknown';
   }
 
   showModal(title: string, message: string, status: string, showCloseBtn: boolean = true, disableClose: boolean = true, installMetamask: boolean = false) {
