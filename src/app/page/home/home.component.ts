@@ -52,6 +52,7 @@ export class HomeComponent {
   balanceAddress: any = 0;
   tokenAddressBalance: any = 0;
   amountTokenNative: any = 0;
+  version: number = 2;
   @ViewChild('qrCode') qrCodeElement!: any; // Sử dụng @ViewChild để lấy phần tử QR code
 
   constructor(private web3Service: Web3Service, private deployService: ContractDeployService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar) {
