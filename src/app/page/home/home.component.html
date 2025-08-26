@@ -1,9 +1,13 @@
 <h2 class="my-5 text-4xl font-medium text-center">MULTISIG WALLET</h2>
 
+<p class="text-lg font-medium">Choose version: {{ version }}</p>
+
 <div class="flex gap-3 my-3">
-  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none" matRipple
+  <div class="px-4 py-2 font-medium text-center border-2 rounded-lg cursor-pointer select-none" matRipple
+    [ngClass]="version === 1 ? ' border-blue-500 bg-[#dce8f6] ' : 'border-transparent bg-[#e8edf3] '"
     (click)="version = 1">Version 1</div>
-  <div class="bg-[#e8edf3] px-4 py-2 rounded-lg cursor-pointer text-center font-medium select-none" matRipple
+  <div class="px-4 py-2 font-medium text-center border-2 rounded-lg cursor-pointer select-none" matRipple
+    [ngClass]="version === 2 ? 'border-blue-500 bg-[#dce8f6] ' : 'border-transparent bg-[#e8edf3] '"
     (click)="version = 2">Version 2</div>
 </div>
 
