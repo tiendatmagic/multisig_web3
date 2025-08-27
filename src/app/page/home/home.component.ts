@@ -157,8 +157,8 @@ export class HomeComponent {
     try {
       const owners = ownerList;
       const contract = await this.deployService.deployContract(
-        this.version === 2 ? (this.isAdvancedContract ? abiAdvV2 : abiV2) : (this.isAdvancedContract ? abiAdv : abi),
-        this.version === 2 ? (this.isAdvancedContract ? bytecodeAdvV2 : bytecodeV2) : (this.isAdvancedContract ? bytecodeAdv : bytecode),
+        this.version === 2 ? abiV2 : abi,
+        this.version === 2 ? bytecodeV2 : bytecode,
         owners,
         requiredSignatures
       );
