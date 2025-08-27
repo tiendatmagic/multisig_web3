@@ -153,6 +153,7 @@ export class Web3Service {
 
 
   async connectWallet() {
+    await this.init();
     try {
       const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
       this.account = accounts[0];
@@ -925,19 +926,37 @@ export class Web3Service {
   }
 
   async getTransaction(txIndex: number) {
+    await this.init();
     try {
       const getTransaction = await this.multiSigContract.methods.getTransaction(txIndex).call();
-      this.transactionDetail = {
-        to: getTransaction.to,
-        value: getTransaction.value.toString(),
-        executed: getTransaction.executed,
-        confirmations: getTransaction.confirmations.toString(),
-        createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
-        tokenAddress: getTransaction.tokenAddress,
-        txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
-        txType: this.getTransactionTypeName(getTransaction.txType),
-        data: getTransaction.data.toString()
-      };
+      console.log(getTransaction);
+      const version = this.versionSubject.value;
+      if (version == 2) {
+        this.transactionDetail = {
+          to: getTransaction.to,
+          value: getTransaction.value.toString(),
+          executed: getTransaction.executed,
+          confirmations: getTransaction.confirmations.toString(),
+          createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
+          tokenAddress: getTransaction.tokenAddress,
+          txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
+          txType: this.getTransactionTypeName(getTransaction.txType),
+          data: getTransaction.data.toString()
+        };
+      }
+
+      else {
+        this.transactionDetail = {
+          to: getTransaction.to,
+          value: getTransaction.value.toString(),
+          executed: getTransaction.executed,
+          confirmations: getTransaction.confirmations.toString(),
+          createdAt: new Date(getTransaction.createdAt.toString() * 1000).toLocaleString(),
+          isTokenTransaction: getTransaction.isTokenTransaction,
+          tokenAddress: getTransaction.tokenAddress,
+          txRequiredSignatures: getTransaction.txRequiredSignatures.toString(),
+        }
+      }
     } catch (e) {
       this.transactionDetail = {};
     }
