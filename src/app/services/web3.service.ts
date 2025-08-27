@@ -39,8 +39,16 @@ export class Web3Service {
   private getTokenAddressBalanceSubject = new BehaviorSubject<number>(0);
   public getTokenAddressBalance$ = this.getTokenAddressBalanceSubject.asObservable();
 
-  private tokenSymbolSubject = new BehaviorSubject<string>('');
+
+  private tokenSymbolSubject = new BehaviorSubject<any>('Token');
   public tokenSymbol$ = this.tokenSymbolSubject.asObservable();
+
+  get tokenSymbol() {
+    return this.tokenSymbolSubject.value;
+  }
+  set tokenSymbol(value: any) {
+    this.tokenSymbolSubject.next(value);
+  }
 
   private nativeSymbolSubject = new BehaviorSubject<string>('ETH');
   public nativeSymbol$ = this.nativeSymbolSubject.asObservable();
@@ -56,7 +64,6 @@ export class Web3Service {
 
   public versionSubject = new BehaviorSubject<number>(2);
   public version$ = this.versionSubject.asObservable();
-  public tokenSymbol: any = 'Token';
   contractAddress: any = '';
 
   constructor(private ngZone: NgZone, public dialog: MatDialog, private snackBar: MatSnackBar, private contractService: ContractService) {
@@ -201,20 +208,51 @@ export class Web3Service {
     try {
       const erc20Abi = [
         {
-          constant: true,
-          inputs: [],
-          name: "decimals",
-          outputs: [{ name: "", type: "uint8" }],
-          type: "function",
+          "constant": true,
+          "inputs": [],
+          "name": "decimals",
+          "outputs": [
+            {
+              "internalType": "uint8",
+              "name": "",
+              "type": "uint8"
+            }
+          ],
+          "stateMutability": "view",
+          "type": "function"
         },
       ];
       const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenAddress);
       const decimals = await tokenContract.methods['decimals']().call();
-      console.log('decimals:', decimals);
       return Number(decimals);
     } catch (e: any) {
       console.error('Error fetching decimals:', e.message);
       return 18;
+    }
+  }
+
+  async getTokenSymbol(tokenAddress: string) {
+    try {
+      const erc20Abi = [{
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      ];
+      const tokenContract = new this.web3.eth.Contract(erc20Abi, tokenAddress);
+      const symbol = await tokenContract.methods['symbol']().call();
+      return symbol;
+    } catch (e: any) {
+      console.error('Error fetching symbol:', e.message);
+      return 'Token';
     }
   }
 
@@ -672,8 +710,7 @@ export class Web3Service {
   async getTokenAddress(tokenAddress: string) {
     try {
       const decimals = await this.getTokenDecimals(tokenAddress);
-      // const symbol = await this.getTokenSymbol(tokenAddress);
-      const symbol = 'Token';
+      const symbol = await this.getTokenSymbol(tokenAddress);
       const getERC20TokenBalance = await this.multiSigContract.methods.getERC20TokenBalance(tokenAddress).call();
       this.getTokenAddressBalance = Number(getERC20TokenBalance) / Math.pow(10, decimals);
       this.tokenSymbol = symbol;
