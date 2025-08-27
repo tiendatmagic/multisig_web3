@@ -112,6 +112,14 @@ export class HomeComponent {
     }
     this.numbersArray = Array.from({ length: this.ownerListLength }).map((_, index) => index + 1);
     this.ownerAddresses = new Array(this.ownerListLength).fill('');
+
+    this.route.queryParams.subscribe(params => {
+      const versionParam = params['version'];
+      if (versionParam) {
+        this.version = parseInt(versionParam, 10);
+        this.web3Service.versionSubject.next(this.version);
+      }
+    });
   }
 
   async onTokenAddressChange() {
@@ -159,7 +167,10 @@ export class HomeComponent {
       this.isShowDeployContract = false;
       this.isShowImportContract = false;
       this.web3Service.getInfo(this.contractAddress);
-      this.router.navigate(['/address/' + this.contractAddress]);
+
+      this.router.navigate(['/address/' + this.contractAddress], {
+        queryParams: { version: this.version }
+      });
     } catch (error) {
       console.error('Deployment failed:', error);
     }
@@ -171,11 +182,11 @@ export class HomeComponent {
       return;
     }
 
-    if (filteredArray.length < this.nrRequiredSignatures) {
+    if (filteredArray.length < this.nrRequiredSignatures && this.nrRequiredSignatures >= 1) {
       this.web3Service.showModal("", "You must add at least " + filteredArray.length + " owners", "error", true, false);
+      return;
     }
 
-    this.nrRequiredSignatures = filteredArray.length;
     this.deployContract(filteredArray, this.nrRequiredSignatures);
   }
 
@@ -649,5 +660,10 @@ export class HomeComponent {
     }
     this.web3Service.cancelTransaction(this.cancelTransactionTxIndex);
     this.web3Service.getInfo(this.contractAddress);
+  }
+
+  chooseVersion(version: number) {
+    this.version = version;
+    this.web3Service.versionSubject.next(version);
   }
 }

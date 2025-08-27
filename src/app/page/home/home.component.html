@@ -5,10 +5,10 @@
 <div class="flex gap-3 my-3">
   <div class="px-4 py-2 font-medium text-center border-2 rounded-lg cursor-pointer select-none" matRipple
     [ngClass]="version === 1 ? ' border-blue-500 bg-[#dce8f6] ' : 'border-transparent bg-[#e8edf3] '"
-    (click)="version = 1">Version 1</div>
+    (click)="chooseVersion(1)">Version 1</div>
   <div class="px-4 py-2 font-medium text-center border-2 rounded-lg cursor-pointer select-none" matRipple
     [ngClass]="version === 2 ? 'border-blue-500 bg-[#dce8f6] ' : 'border-transparent bg-[#e8edf3] '"
-    (click)="version = 2">Version 2</div>
+    (click)="chooseVersion(2)">Version 2</div>
 </div>
 
 <ng-container *ngIf="version === 1">
